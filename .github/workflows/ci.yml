@@ -18,7 +18,10 @@ jobs:
         run: swift --version
 
       - name: Type-check the tool
-        run: swift -typecheck bin/roblox_studio_capture.swift
+        # `-typecheck` is a swiftc flag, not a `swift` (interpreter driver) one — verified
+        # locally (`swiftc -typecheck ...` exits 0) after the first push failed on this
+        # exact line with "option '-typecheck' is not supported by 'swift'".
+        run: swiftc -typecheck bin/roblox_studio_capture.swift
 
       - name: Smoke-test list (must succeed even with zero/no matching Roblox windows)
         run: |
