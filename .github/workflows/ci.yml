@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  typecheck:
+    # The window-enumeration APIs this tool uses are macOS-specific, so it can only ever
+    # build/typecheck on a macOS runner.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Swift version
+        run: swift --version
+
+      - name: Type-check the tool
+        run: swift -typecheck bin/roblox_studio_capture.swift
+
+      - name: Smoke-test list (must succeed even with zero/no matching Roblox windows)
+        run: |
+          swift bin/roblox_studio_capture.swift list
+          swift bin/roblox_studio_capture.swift list --json
+          swift bin/roblox_studio_capture.swift list --pattern "DefinitelyNotInstalledXYZ"
+
+      - name: Validate error paths exit with the documented codes
+        # GitHub Actions runs `run:` blocks under `set -e`, so a command we EXPECT to fail
+        # would abort the step before its exit code could be checked. Disable that around
+        # each expected-failure call, capture $?, then re-enable it for the comparison.
+        run: |
+          check_exit() {
+            local expected="$1"; shift
+            set +e
+            "$@" >/dev/null 2>&1
+            local code=$?
+            set -e
+            if [ "$code" -ne "$expected" ]; then
+              echo "expected exit $expected from: $*  (got $code)"
+              exit 1
+            fi
+          }
+          check_exit 1  swift bin/roblox_studio_capture.swift shot --pattern "DefinitelyNotInstalledXYZ"
+          check_exit 1  swift bin/roblox_studio_capture.swift shot --id 999999999
+          check_exit 64 swift bin/roblox_studio_capture.swift bogus
+
+  validate-plugin:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Validate plugin/marketplace manifest
+        run: claude plugin validate .

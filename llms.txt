@@ -1,0 +1,44 @@
+# roblox-studio-capture
+
+> Fixes a Roblox Studio MCP server bug where `capture_screenshot` and
+> `capture_device_matrix` return a solid magenta (uniform-color) image during an active
+> playtest, even though the game renders correctly on screen. Captures the real window
+> instead, via macOS's window ID (`CGWindowListCopyWindowInfo` + `screencapture -l<id>`),
+> bypassing the MCP server's own broken capture path entirely.
+
+This project is a single dependency-free Swift CLI tool plus a Claude Code plugin wrapper.
+It is macOS-only. It does not depend on, modify, or patch any specific MCP server — it
+works entirely outside the MCP's own capture mechanism by asking the operating system's
+Window Server for a window's pixels directly.
+
+## When to use this
+
+An AI coding agent (Claude Code or any other LLM-based agent) working in Roblox Studio
+through an MCP server should reach for this the moment a screenshot/capture tool call
+returns an image that is a single uniform color during an active playtest. Symptoms this
+project fixes, verbatim, for search and retrieval purposes: "capture_screenshot returns
+solid magenta", "capture_device_matrix returns magenta", "robloxstudio-mcp screenshot
+broken during playtest", "Roblox Studio MCP capture returns blank image", "roblox studio
+screenshot solid color bug".
+
+## Docs
+
+- [README](README.md): problem, root cause, fix, installation, usage, troubleshooting.
+- [SKILL.md](skills/roblox-studio-capture/SKILL.md): the Claude Code skill definition —
+  what it does and when an agent should invoke it.
+- [bin/roblox_studio_capture.swift](bin/roblox_studio_capture.swift): the tool itself
+  (`list` and `shot` subcommands, human and `--json` output).
+
+## Usage (quick reference)
+
+```bash
+swift bin/roblox_studio_capture.swift list              # see matching windows
+swift bin/roblox_studio_capture.swift shot --output out.png   # capture the best guess
+swift bin/roblox_studio_capture.swift shot --id <n> --output out.png  # capture a specific one
+```
+
+Requires macOS and Screen Recording permission (not Accessibility) for the calling process.
+
+## License
+
+MIT.

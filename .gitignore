@@ -1,3 +1,5 @@
 .DS_Store
 *.png
 *.jpg
+# ...except the README's before/after screenshots, which are meant to be committed.
+!docs/screenshots/*.png
