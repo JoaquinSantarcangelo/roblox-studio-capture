@@ -1,0 +1,11 @@
+{
+  "name": "roblox-studio-capture",
+  "version": "1.0.0",
+  "description": "Screenshots the real Roblox Studio/Player window by macOS window ID, bypassing MCP capture tools that return solid magenta during a playtest.",
+  "author": {
+    "name": "Joaquin Santarcangelo"
+  },
+  "repository": "https://github.com/JoaquinSantarcangelo/roblox-studio-capture",
+  "license": "MIT",
+  "keywords": ["roblox", "roblox-studio", "screenshot", "mcp", "macos", "playtest", "claude-code"]
+}

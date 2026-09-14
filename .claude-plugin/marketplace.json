@@ -1,0 +1,20 @@
+{
+  "name": "roblox-studio-capture",
+  "owner": {
+    "name": "Joaquin Santarcangelo"
+  },
+  "metadata": {
+    "description": "A workaround for MCP-based Roblox Studio automation tools whose screenshot commands return solid magenta during a playtest"
+  },
+  "plugins": [
+    {
+      "name": "roblox-studio-capture",
+      "source": "./",
+      "description": "Screenshots the real Roblox Studio/Player window by macOS window ID, bypassing MCP capture tools that return solid magenta during a playtest.",
+      "version": "1.0.0",
+      "license": "MIT",
+      "keywords": ["roblox", "roblox-studio", "screenshot", "mcp", "macos", "playtest"],
+      "category": "development-tools"
+    }
+  ]
+}
